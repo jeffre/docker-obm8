@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  obm:
+    build: .
+    image: yoff/obm8
+    restart: on-failure
+    mem_limit: 4g
+    #volumes:
+    #  - ./config:/root/.obm/config
+    #  - ./logs:/root/.obm/log
+    #  - /BACKUPSOURCE:/BACKUPSOURCE:ro
+    hostname: docker-obm
+    environment:
+      - TZ=America/Phoenix
+      - USERNAME=jeffre
+      - PASSWORD=secretpassword
+      - SERVER=obsr.example.com
+      - PROTO=https
+      - LANG=en
+      - BSET-1468557583616=PKCS7Padding,-256,,

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Kill Process Matched the provided Process Image Name
+
+if [ $# = 0 ];then
+    echo "Please Specify the Image Name as an argument"
+    echo "Usage: taskkill CMD_NAME"
+    exit 0
+fi
+
+IGNORE_CMD_NAME=""
+if [ -z "$2" ]; then
+    IGNORE_CMD_NAME=""
+   else
+    IGNORE_CMD_NAME="$2"
+fi
+
+CMD_NAME="$1"
+echo "Kill Process by Image Name: $CMD_NAME"
+echo "Ignore Process by Image Name: $IGNORE_CMD_NAME"
+
+PID_CURRENT_SHELL=`echo $$`
+
+# Find and kill all image name matched the CMD_NAME
+# The PID of this shell script will appear at last as sorted by PID
+
+case "`uname`" in
+    Solaris* | SunOS*)
+        # Solaris cannot use ax with -o together, use -e instead to list all processes
+        # Solaris cannot use '-o command', use '-o args' instead
+        PS_CMD="ps -e -opid,args"
+        ;;
+    *)
+        PS_CMD="ps ax -opid,command"
+        ;;
+esac
+
+while true ; do
+    if [ "" = "$IGNORE_CMD_NAME" ]; then
+        PID_FOUND=`$PS_CMD | grep "$CMD_NAME" | grep -v grep | head -n 1 | xargs -n 1 echo | sed '/^ *$/d' | head -n 1`;
+    else
+        PID_FOUND=`$PS_CMD | grep "$CMD_NAME" | grep -v grep | grep -v "$IGNORE_CMD_NAME" | head -n 1 | xargs -n 1 echo | sed '/^ *$/d' | head -n 1`;
+    fi
+
+    if [ "$PID_CURRENT_SHELL" = "$PID_FOUND" ]; then
+        break;
+    elif [ "" = "$PID_FOUND" ]; then
+        break;
+    else
+        echo "Kill process of PID ${PID_FOUND}"
+        kill -9 $PID_FOUND
+    fi
+done

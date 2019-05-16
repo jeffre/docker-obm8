@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<auotupdate>
+  <product>
+    <name>obm</name>
+  </product>
+  <agent>
+    <home-dir path=".." />
+    <work-dir path="aua" />
+    <update auto="true"/>
+    <download filename="index.xml" auto="true" />
+    <install auto="true" />
+  </agent>
+  <network />
+</auotupdate>
+
